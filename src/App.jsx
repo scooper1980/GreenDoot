@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
 import Login from "./Pages/Login";
-import Dashboard from "./pages/Dashboard";
+import Dashboard from "./Pages/Dashboard";
 import Transfer from "./Pages/Transfer";
 import Withdraw from "./Pages/withdraw";
 import Profile from "./Pages/Profile";
