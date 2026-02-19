@@ -1,33 +1,44 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
-import Login from "./pages/Login";
+import Login from "./Pages/Login";
 import Dashboard from "./pages/Dashboard";
-import Transfer from "./pages/Transfer";
-import Withdraw from "./pages/Withdraw";
-import Profile from "./pages/Profile";
+import Transfer from "./Pages/Transfer";
+import Withdraw from "./Pages/withdraw";
+import Profile from "./Pages/Profile";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // Load login state from localStorage
+  const [balance, setBalance] = useState(200456.34);
+  const [transactions, setTransactions] = useState([]);
+
+  // Load saved data
   useEffect(() => {
     const storedLogin = localStorage.getItem("isLoggedIn");
-    if (storedLogin === "true") {
-      setIsLoggedIn(true);
-    }
+    const storedBalance = localStorage.getItem("balance");
+    const storedTransactions = localStorage.getItem("transactions");
+
+    if (storedLogin === "true") setIsLoggedIn(true);
+    if (storedBalance) setBalance(parseFloat(storedBalance));
+    if (storedTransactions) setTransactions(JSON.parse(storedTransactions));
   }, []);
 
-  // Save login state
+  // Save balance
   useEffect(() => {
-    localStorage.setItem("isLoggedIn", isLoggedIn);
-  }, [isLoggedIn]);
+    localStorage.setItem("balance", balance);
+  }, [balance]);
+
+  // Save transactions
+  useEffect(() => {
+    localStorage.setItem("transactions", JSON.stringify(transactions));
+  }, [transactions]);
 
   return (
     <Router>
       <div className="min-h-screen bg-black text-white">
         <Routes>
-          {/* Login */}
+
           <Route
             path="/"
             element={
@@ -38,32 +49,52 @@ function App() {
               )
             }
           />
-
-          {/* Dashboard */}
-          <Route
+      <Route
             path="/dashboard"
             element={
-              isLoggedIn ? <Dashboard /> : <Navigate to="/" />
+              isLoggedIn ? (
+                <Dashboard
+                  balance={balance}
+                  transactions={transactions}
+                />
+              ) : (
+                <Navigate to="/" />
+              )
             }
           />
 
-          {/* Transfer */}
           <Route
             path="/transfer"
             element={
-              isLoggedIn ? <Transfer /> : <Navigate to="/" />
+              isLoggedIn ? (
+                <Transfer
+                  balance={balance}
+                  setBalance={setBalance}
+                  transactions={transactions}
+                  setTransactions={setTransactions}
+                />
+              ) : (
+                <Navigate to="/" />
+              )
             }
           />
 
-          {/* Withdraw */}
           <Route
             path="/withdraw"
             element={
-              isLoggedIn ? <Withdraw /> : <Navigate to="/" />
+              isLoggedIn ? (
+                <Withdraw
+                  balance={balance}
+                  setBalance={setBalance}
+                  transactions={transactions}
+                  setTransactions={setTransactions}
+                />
+              ) : (
+                <Navigate to="/" />
+              )
             }
           />
 
-          {/* Profile */}
           <Route
             path="/profile"
             element={
@@ -74,6 +105,7 @@ function App() {
               )
             }
           />
+
         </Routes>
       </div>
     </Router>
